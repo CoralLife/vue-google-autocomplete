@@ -104,8 +104,11 @@
                     route: 'long_name',
                     locality: 'long_name',
                     administrative_area_level_1: 'short_name',
+                    administrative_area_level_2: 'short_name',
                     country: 'long_name',
-                    postal_code: 'short_name'
+                    postal_code: 'short_name',
+                    sublocality_level_1: 'short_name',
+                    neighborhood: 'long_name'
                 };
 
                 let returnData = {};
@@ -116,13 +119,18 @@
                       let addressType = place.address_components[i].types[0];
 
                       if (addressComponents[addressType]) {
-                        let val = place.address_components[i][addressComponents[addressType]];
-                            returnData[addressType] = val;
+                        let shortVal = place.address_components[i].short_name;
+                        let longVal = place.address_components[i].long_name;
+                        let shortField = addressType+'_short';
+                        let longField = addressType+'_long';
+                        returnData[shortField] = shortVal;
+                        returnData[longField] = longVal;
                       }
                     }
 
                     returnData['latitude'] = place.geometry.location.lat();
                     returnData['longitude'] = place.geometry.location.lng();
+                    returnData['formatted_address'] = place.formatted_address;
 
                     // return returnData object and PlaceResult object
                     this.$emit('placechanged', returnData, place, this.id);
